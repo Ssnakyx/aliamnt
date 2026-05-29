@@ -42,6 +42,9 @@ export function useCursor() {
   }
 
   onMounted(() => {
+    // Disable on touch/mobile devices
+    if (window.matchMedia('(pointer: coarse)').matches) return
+
     cursorEl = document.getElementById('cursor-ring')
     dotEl = document.getElementById('cursor-dot')
 

@@ -80,6 +80,12 @@ const cursor = useCursor()
 }
 .cursor-dot.is-visible { opacity: 1; }
 
+/* Hide custom cursor on touch/mobile */
+@media (pointer: coarse) {
+  .cursor-ring,
+  .cursor-dot { display: none !important; }
+}
+
 /* Page transitions */
 .page-enter-active,
 .page-leave-active {
