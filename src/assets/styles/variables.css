@@ -1,0 +1,55 @@
+:root {
+  /* Backgrounds — deep navy */
+  --color-bg:        #07101E;
+  --color-surface:   #0C1828;
+  --color-surface-2: #111F30;
+
+  /* Primary: bleu électrique */
+  --color-green:     #4191FF;
+  --color-green-dim: #1D65D4;
+  --color-green-dark: #0E3A8A;
+
+  /* Light blue — accent secondaire */
+  --color-sand:      #93C5FD;
+
+  /* Blanc légèrement bleuté */
+  --color-white:     #EEF4FF;
+
+  /* Grays — teintés bleu */
+  --color-gray:       #6879A0;
+  --color-gray-light: #94A3C0;
+
+  /* Borders */
+  --color-border:        rgba(65, 145, 255, 0.15);
+  --color-border-subtle: rgba(255, 255, 255, 0.06);
+
+  /* Typography */
+  --font-playfair: 'Sora', system-ui, sans-serif;
+  --font-dm:       'Inter', system-ui, sans-serif;
+  --font-mono:     'Space Mono', monospace;
+
+  /* Spacing */
+  --space-section:   clamp(5rem, 10vw, 10rem);
+  --space-container: clamp(1rem, 5vw, 4rem);
+
+  /* Animation */
+  --duration-fast:   150ms;
+  --duration-base:   300ms;
+  --duration-slow:   600ms;
+  --duration-slower: 1000ms;
+  --ease-expo:   cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in:     cubic-bezier(0.7, 0, 0.84, 0);
+  --ease-smooth: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+
+  /* Borders */
+  --radius-sm:   4px;
+  --radius-md:   8px;
+  --radius-lg:   16px;
+  --radius-xl:   24px;
+  --radius-full: 9999px;
+
+  /* Shadows — bleu */
+  --shadow-green-sm: 0 0 20px rgba(65, 145, 255, 0.20);
+  --shadow-green-md: 0 0 40px rgba(65, 145, 255, 0.25);
+  --shadow-green-lg: 0 0 80px rgba(65, 145, 255, 0.30);
+}

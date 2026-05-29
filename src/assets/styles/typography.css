@@ -1,0 +1,86 @@
+.text-display-xl {
+  font-family: var(--font-playfair);
+  font-size: clamp(3rem, 8vw, 7rem);
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  font-weight: 700;
+}
+
+.text-display-lg {
+  font-family: var(--font-playfair);
+  font-size: clamp(2.5rem, 6vw, 5rem);
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  font-weight: 700;
+}
+
+.text-display-md {
+  font-family: var(--font-playfair);
+  font-size: clamp(2rem, 4vw, 3.5rem);
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+  font-weight: 700;
+}
+
+.text-heading {
+  font-family: var(--font-playfair);
+  font-size: clamp(1.5rem, 3vw, 2.25rem);
+  line-height: 1.2;
+  font-weight: 700;
+}
+
+.text-subheading {
+  font-family: var(--font-dm);
+  font-size: clamp(1.125rem, 2vw, 1.5rem);
+  line-height: 1.4;
+  font-weight: 400;
+}
+
+.text-body {
+  font-family: var(--font-dm);
+  font-size: 1rem;
+  line-height: 1.7;
+}
+
+.text-small {
+  font-family: var(--font-dm);
+  font-size: 0.875rem;
+  line-height: 1.6;
+}
+
+.text-stat {
+  font-family: var(--font-mono);
+  font-size: clamp(2.5rem, 5vw, 4rem);
+  line-height: 1;
+  letter-spacing: -0.02em;
+}
+
+.text-label {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+}
+
+.text-italic {
+  font-style: italic;
+}
+
+.text-green {
+  color: var(--color-green);
+}
+
+.text-sand {
+  color: var(--color-sand);
+}
+
+.text-gray {
+  color: var(--color-gray);
+}
+
+.gradient-text {
+  background: linear-gradient(135deg, var(--color-green) 0%, var(--color-sand) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
