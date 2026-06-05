@@ -33,6 +33,7 @@
           <div class="acard-art">
             <img src="/Images/campagne_puff_1.jpg" alt="Campagne #NonAuPuff — La jeunesse africaine dit non aux cigarettes électroniques" loading="lazy" />
           </div>
+          <div class="card-glare" aria-hidden="true" />
         </RouterLink>
 
         <!-- Card 1 — medium -->
@@ -49,6 +50,7 @@
           <div class="acard-art">
             <img src="/Images/novembre_bleu.jpg" alt="Novembre Bleu — Sensibilisation au cancer de la prostate" loading="lazy" />
           </div>
+          <div class="card-glare" aria-hidden="true" />
         </RouterLink>
 
         <!-- Card 2 — medium -->
@@ -65,6 +67,7 @@
           <div class="acard-art">
             <img src="/Images/aliamnt_explique_1.jpg" alt="ALIAMNT t'explique — Série pédagogique sur les maladies non transmissibles" loading="lazy" />
           </div>
+          <div class="card-glare" aria-hidden="true" />
         </RouterLink>
 
       </div>
@@ -77,12 +80,15 @@ import { ref, onMounted } from 'vue'
 import { RouterLink } from 'vue-router'
 import gsap from 'gsap'
 import ScrollTrigger from 'gsap/ScrollTrigger'
+import { useTilt } from '@/composables/useTilt'
 
 gsap.registerPlugin(ScrollTrigger)
 
 const sectionEl = ref<HTMLElement | null>(null)
 const headEl    = ref<HTMLElement | null>(null)
 const cardsEl   = ref<HTMLElement | null>(null)
+
+useTilt(cardsEl, '.acard')
 
 onMounted(() => {
   if (headEl.value) {
@@ -266,6 +272,17 @@ onMounted(() => {
 
 .acard:hover .acard-art img {
   transform: scale(1.04);
+}
+
+/* ── Glare ───────────────────────────────── */
+.card-glare {
+  position: absolute;
+  inset: 0;
+  border-radius: 24px;
+  pointer-events: none;
+  z-index: 4;
+  opacity: 0;
+  transition: opacity 0.3s;
 }
 
 /* ── Responsive ─────────────────────────── */

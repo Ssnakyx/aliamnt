@@ -46,6 +46,9 @@
               </svg>
             </span>
           </div>
+
+          <!-- Tilt glare -->
+          <div class="card-glare" aria-hidden="true" />
         </RouterLink>
       </div>
 
@@ -54,17 +57,20 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, onUnmounted } from 'vue'
 import { RouterLink } from 'vue-router'
 import gsap from 'gsap'
 import ScrollTrigger from 'gsap/ScrollTrigger'
 import { maladies } from '@/data/maladies'
+import { useTilt } from '@/composables/useTilt'
 
 gsap.registerPlugin(ScrollTrigger)
 
 const sectionEl = ref<HTMLElement | null>(null)
 const headEl    = ref<HTMLElement | null>(null)
 const gridEl    = ref<HTMLElement | null>(null)
+
+useTilt(gridEl, '.mcard')
 
 /* ── SVG icon map ──────────────────────────────────────── */
 const iconMap: Record<string, string> = {
@@ -315,6 +321,17 @@ onMounted(() => {
   opacity: 1;
   color: var(--c);
   transform: translate(0, 0);
+}
+
+/* ── Glare overlay ───────────────────────── */
+.card-glare {
+  position: absolute;
+  inset: 0;
+  border-radius: 20px;
+  pointer-events: none;
+  z-index: 4;
+  opacity: 0;
+  transition: opacity 0.3s;
 }
 
 /* ── Responsive ─────────────────────────── */
