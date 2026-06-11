@@ -45,7 +45,7 @@ const props = withDefaults(defineProps<Props>(), {
   border: 1px solid transparent;
   text-decoration: none;
   white-space: nowrap;
-  cursor: none;
+  cursor: pointer;
   transition:
     background-color var(--duration-base) var(--ease-expo),
     color var(--duration-base) var(--ease-expo),

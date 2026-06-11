@@ -30,13 +30,7 @@ body {
   font-family: var(--font-dm);
   line-height: 1.6;
   overflow-x: hidden;
-  cursor: none;
-}
-
-@media (pointer: coarse) {
-  body {
-    cursor: auto;
-  }
+  cursor: auto;
 }
 
 img, video {
@@ -51,7 +45,7 @@ a {
 }
 
 button {
-  cursor: none;
+  cursor: pointer;
   border: none;
   background: none;
   font-family: inherit;

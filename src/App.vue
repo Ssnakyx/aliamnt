@@ -2,17 +2,6 @@
   <div id="app">
     <a href="#main-content" class="skip-link">Aller au contenu principal</a>
 
-    <div
-      id="cursor-ring"
-      :class="['cursor-ring', { 'is-visible': cursor.isVisible.value, 'is-hovered': cursor.isHovered.value, 'is-clicking': cursor.isClicking.value }]"
-      aria-hidden="true"
-    ></div>
-    <div
-      id="cursor-dot"
-      :class="['cursor-dot', { 'is-visible': cursor.isVisible.value }]"
-      aria-hidden="true"
-    ></div>
-
     <ScrollProgress />
     <NavBar />
 
@@ -35,9 +24,6 @@ import NavBar from '@/components/layout/NavBar.vue'
 import Footer from '@/components/layout/Footer.vue'
 import ScrollProgress from '@/components/ui/ScrollProgress.vue'
 import BackToTop from '@/components/ui/BackToTop.vue'
-import { useCursor } from '@/composables/useCursor'
-
-const cursor = useCursor()
 </script>
 
 <style>
@@ -47,52 +33,6 @@ const cursor = useCursor()
 @import 'tailwindcss/base';
 @import 'tailwindcss/components';
 @import 'tailwindcss/utilities';
-
-/* Custom Cursor */
-.cursor-ring {
-  position: fixed;
-  width: 40px;
-  height: 40px;
-  border: 1.5px solid rgba(26, 224, 90, 0.7);
-  border-radius: 50%;
-  pointer-events: none;
-  z-index: 9999;
-  top: 0;
-  left: 0;
-  opacity: 0;
-  transition: opacity 0.3s, border-color 0.3s;
-  mix-blend-mode: difference;
-  will-change: transform;
-}
-
-.cursor-ring.is-visible { opacity: 1; }
-.cursor-ring.is-hovered {
-  border-color: var(--color-green);
-  background: rgba(26, 224, 90, 0.08);
-}
-.cursor-ring.is-clicking { transform: scale(0.85) !important; }
-
-.cursor-dot {
-  position: fixed;
-  width: 8px;
-  height: 8px;
-  background: var(--color-green);
-  border-radius: 50%;
-  pointer-events: none;
-  z-index: 9999;
-  top: 0;
-  left: 0;
-  opacity: 0;
-  transition: opacity 0.3s;
-  will-change: transform;
-}
-.cursor-dot.is-visible { opacity: 1; }
-
-/* Hide custom cursor on touch/mobile */
-@media (pointer: coarse) {
-  .cursor-ring,
-  .cursor-dot { display: none !important; }
-}
 
 /* Page transitions — fondu + montée + dé-flou */
 .page-enter-active {
