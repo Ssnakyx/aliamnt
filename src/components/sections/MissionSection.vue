@@ -44,9 +44,10 @@ onMounted(() => {
 
   gsap.fromTo(
     sectionEl.value.querySelectorAll('.mission__header > *'),
-    { opacity: 0, y: 24 },
+    { opacity: 0, y: 32, filter: 'blur(10px)' },
     {
-      opacity: 1, y: 0, duration: 0.8, ease: 'expo.out', stagger: 0.1,
+      opacity: 1, y: 0, filter: 'blur(0px)', duration: 0.9, ease: 'power3.out', stagger: 0.1,
+      clearProps: 'filter',
       scrollTrigger: { trigger: sectionEl.value, start: 'top 80%', once: true },
     },
   )
@@ -129,7 +130,7 @@ onMounted(() => {
 <style scoped>
 .mission {
   background-color: var(--color-bg);
-  padding-block: clamp(5rem, 8vw, 8rem);
+  padding-block: clamp(6rem, 10vw, 10.5rem);
 }
 
 .mission__container {
@@ -158,7 +159,7 @@ onMounted(() => {
 .mission__title {
   font-family: var(--font-playfair);
   font-size: clamp(2.5rem, 5vw, 4.5rem);
-  font-weight: 800;
+  font-weight: 700;
   color: var(--color-white);
   line-height: 1.08;
   letter-spacing: -0.025em;
@@ -166,8 +167,12 @@ onMounted(() => {
 }
 
 .mission__title em {
-  font-style: italic;
-  color: var(--color-green);
+  font-style: normal;
+  background: var(--gradient-accent);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
 }
 
 /* ── Rows ── */

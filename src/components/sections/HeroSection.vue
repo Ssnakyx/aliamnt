@@ -1,9 +1,18 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted } from 'vue'
+import { useRouter } from 'vue-router'
 import gsap from 'gsap'
 import ScrollTrigger from 'gsap/ScrollTrigger'
+import { useMagnetic } from '@/composables/useMagnetic'
 
 gsap.registerPlugin(ScrollTrigger)
+
+const router = useRouter()
+const heroEl     = ref<HTMLElement | null>(null)
+const contentEl  = ref<HTMLElement | null>(null)
+const visualEl   = ref<HTMLElement | null>(null)
+
+useMagnetic(contentEl, '.btn', 0.25)
 
 const titleLine1 = ref<HTMLElement | null>(null)
 const titleLine2 = ref<HTMLElement | null>(null)
@@ -50,19 +59,20 @@ onMounted(() => {
     gsap.fromTo(eyebrow.value, { opacity: 0, x: -16 }, { opacity: 1, x: 0, duration: 0.7, ease: 'expo.out' })
   }
 
+  /* Entrée des lignes : montée + dé-flou, façon Apple */
   gsap.fromTo(lines,
-    { clipPath: 'inset(0 0 100% 0)' },
-    { clipPath: 'inset(0 0 0% 0)', duration: 0.9, ease: 'expo.out', stagger: 0.15, delay: 0.15 },
+    { opacity: 0, y: 60, filter: 'blur(14px)' },
+    { opacity: 1, y: 0, filter: 'blur(0px)', duration: 1.1, ease: 'power3.out', stagger: 0.13, delay: 0.15, clearProps: 'filter' },
   )
 
   if (subtitle.value) {
-    gsap.fromTo(subtitle.value, { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.7, ease: 'expo.out', delay: 0.7 })
+    gsap.fromTo(subtitle.value, { opacity: 0, y: 24, filter: 'blur(8px)' }, { opacity: 1, y: 0, filter: 'blur(0px)', duration: 0.9, ease: 'power3.out', delay: 0.65, clearProps: 'filter' })
   }
 
   if (ctaGroup.value) {
     gsap.fromTo(ctaGroup.value.querySelectorAll('button'),
-      { opacity: 0, y: 20 },
-      { opacity: 1, y: 0, duration: 0.6, ease: 'expo.out', stagger: 0.1, delay: 1.0 },
+      { opacity: 0, y: 22 },
+      { opacity: 1, y: 0, duration: 0.7, ease: 'power3.out', stagger: 0.09, delay: 0.95 },
     )
   }
 
@@ -74,6 +84,35 @@ onMounted(() => {
   const imgs = [imgBEl.value, imgAEl.value, imgMainEl.value].filter(Boolean) as HTMLElement[]
   if (imgs.length) {
     gsap.to(imgs, { opacity: 1, duration: 1.1, stagger: 0.22, ease: 'power2.out', delay: 0.55 })
+  }
+
+  /* ── Parallax de sortie : le hero s'enfonce quand on défile ── */
+  if (heroEl.value && contentEl.value) {
+    gsap.to(contentEl.value, {
+      yPercent: -14,
+      opacity: 0.15,
+      scale: 0.965,
+      ease: 'none',
+      scrollTrigger: {
+        trigger: heroEl.value,
+        start: 'top top',
+        end: 'bottom 25%',
+        scrub: 0.5,
+      },
+    })
+  }
+  if (heroEl.value && visualEl.value) {
+    gsap.to(visualEl.value, {
+      yPercent: -7,
+      opacity: 0.3,
+      ease: 'none',
+      scrollTrigger: {
+        trigger: heroEl.value,
+        start: 'top top',
+        end: 'bottom 25%',
+        scrub: 0.8,
+      },
+    })
   }
 
   /* ── Image cycle ── */
@@ -88,7 +127,7 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <section class="hero">
+  <section ref="heroEl" class="hero">
     <!-- Ambient background layers -->
     <div class="blob blob--1" aria-hidden="true" />
     <div class="blob blob--2" aria-hidden="true" />
@@ -111,7 +150,7 @@ onUnmounted(() => {
     <div class="hero__inner">
 
       <!-- Left: content -->
-      <div class="hero__content">
+      <div ref="contentEl" class="hero__content">
         <div ref="eyebrow" class="hero__eyebrow">
           <span class="eyebrow-pulse" aria-hidden="true" />
           <span class="eyebrow-text">Alliance contre les Maladies Non Transmissibles</span>
@@ -128,19 +167,19 @@ onUnmounted(() => {
         </p>
 
         <div ref="ctaGroup" class="hero__cta">
-          <button class="btn btn--primary">
-            Découvrir nos actions
+          <button class="btn btn--primary" @click="router.push('/evaluation')">
+            Évaluer mon risque santé
             <svg width="13" height="13" viewBox="0 0 14 14" fill="none" aria-hidden="true">
               <path d="M3 11L11 3M11 3H5M11 3V9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
             </svg>
           </button>
-          <button class="btn btn--outline">Rejoindre l'association</button>
-          <button class="btn btn--ghost">Faire un don</button>
+          <button class="btn btn--outline" @click="router.push('/campagnes')">Découvrir nos actions</button>
+          <button class="btn btn--ghost" @click="router.push('/rejoindre')">Rejoindre l'association</button>
         </div>
       </div>
 
       <!-- Right: floating image cluster -->
-      <div class="hero__visual" aria-hidden="true">
+      <div ref="visualEl" class="hero__visual" aria-hidden="true">
         <!-- Radial glow behind images -->
         <div class="vis-glow" />
 
@@ -184,9 +223,11 @@ onUnmounted(() => {
         <!-- Cycle indicator dots -->
         <div class="cycle-dots">
           <button
-            v-for="(_, i) in cycleImages"
+            v-for="(item, i) in cycleImages"
             :key="i"
             :class="['cycle-dot', { 'is-active': i === currentIdx }]"
+            :aria-label="`Afficher l'image ${item.label}`"
+            type="button"
             @click="currentIdx = i"
           />
         </div>
@@ -377,19 +418,28 @@ onUnmounted(() => {
   flex-direction: column;
   gap: 0;
   margin: 0;
-  line-height: 1.05;
-  letter-spacing: -0.02em;
+  line-height: 1.02;
+  letter-spacing: -0.035em;
 }
 
 .title-line {
   display: block;
   font-family: var(--font-playfair);
-  font-size: clamp(3rem, 6.5vw, 6.5rem);
-  will-change: clip-path;
+  font-weight: 600;
+  font-size: clamp(3.1rem, 7vw, 7rem);
+  will-change: transform, opacity;
 }
 
 .title-line--white { color: var(--color-white); }
-.title-line--green { color: var(--color-green); font-style: italic; }
+
+.title-line--green {
+  background: var(--gradient-accent);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+  padding-bottom: 0.08em; /* évite que le dégradé coupe les descendantes */
+}
 
 /* ── Subtitle ────────────────────────────── */
 .hero__subtitle {
@@ -412,28 +462,40 @@ onUnmounted(() => {
 .btn {
   font-family: var(--font-dm);
   font-weight: 500;
-  font-size: 0.92rem;
-  padding: 0.75rem 1.6rem;
+  font-size: 0.95rem;
+  padding: 0.85rem 1.75rem;
   border-radius: 9999px;
   border: none;
   cursor: pointer;
-  transition: transform 0.3s var(--ease-expo), box-shadow 0.3s, background-color 0.25s, color 0.25s, border-color 0.25s;
+  transition: box-shadow 0.3s, background-color 0.25s, color 0.25s, border-color 0.25s;
   white-space: nowrap;
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
+  will-change: transform;
 }
 
-.btn--primary { background-color: var(--color-green); color: #07101E; font-weight: 600; }
-.btn--primary:hover { transform: scale(1.04) translateY(-1px); box-shadow: 0 8px 32px rgba(65, 145, 255, 0.4); }
+.btn--primary {
+  background: linear-gradient(180deg, #5CA2FF 0%, var(--color-green) 100%);
+  color: #050A13;
+  font-weight: 600;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.35), 0 4px 20px rgba(65, 145, 255, 0.25);
+}
+.btn--primary:hover { box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.35), 0 8px 36px rgba(65, 145, 255, 0.5); }
 .btn--primary svg { transition: transform 0.3s var(--ease-expo); }
 .btn--primary:hover svg { transform: translate(2px, -2px); }
 
-.btn--outline { background: transparent; color: var(--color-green); border: 1.5px solid rgba(65, 145, 255, 0.35); }
-.btn--outline:hover { background: rgba(65, 145, 255, 0.08); border-color: var(--color-green); transform: translateY(-1px); }
+.btn--outline {
+  background: rgba(255, 255, 255, 0.04);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  color: var(--color-white);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+}
+.btn--outline:hover { background: rgba(255, 255, 255, 0.09); border-color: rgba(255, 255, 255, 0.28); }
 
-.btn--ghost { background: transparent; color: var(--color-gray); border: 1.5px solid transparent; }
-.btn--ghost:hover { color: var(--color-white); border-color: rgba(255,255,255,0.1); transform: translateY(-1px); }
+.btn--ghost { background: transparent; color: var(--color-gray-light); border: 1px solid transparent; }
+.btn--ghost:hover { color: var(--color-white); }
 
 /* ── Visual (right column) ───────────────── */
 .hero__visual {

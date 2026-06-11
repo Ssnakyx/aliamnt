@@ -34,6 +34,7 @@ export const maladies: Maladie[] = [
     ],
     statistiquesAfrique: '46% des adultes africains souffrent d\'hypertension, soit le taux le plus élevé au monde',
     couleur: '#FF4444',
+    categorie: 'Cardiovasculaire',
     mythes: [
       {
         mythe: 'L\'hypertension ne touche que les personnes âgées',
@@ -78,6 +79,7 @@ export const maladies: Maladie[] = [
     ],
     statistiquesAfrique: '24 millions d\'Africains vivent avec le diabète — un chiffre qui devrait tripler d\'ici 2045',
     couleur: '#F59E0B',
+    categorie: 'Métabolique',
     mythes: [
       {
         mythe: 'Le diabète vient de manger trop de sucre',
@@ -122,6 +124,7 @@ export const maladies: Maladie[] = [
     ],
     statistiquesAfrique: 'L\'Afrique subsaharienne a le taux de mortalité par AVC le plus élevé au monde : 3 fois supérieur aux pays développés',
     couleur: '#8B5CF6',
+    categorie: 'Cardiovasculaire',
     mythes: [
       {
         mythe: 'L\'AVC n\'arrive qu\'aux vieilles personnes',
@@ -166,6 +169,7 @@ export const maladies: Maladie[] = [
     ],
     statistiquesAfrique: '1,1 million de nouveaux cas de cancer en Afrique chaque année — ce chiffre devrait tripler d\'ici 2040',
     couleur: '#EC4899',
+    categorie: 'Cancers',
     mythes: [
       {
         mythe: 'Le cancer est une condamnation à mort',
@@ -210,6 +214,7 @@ export const maladies: Maladie[] = [
     ],
     statistiquesAfrique: 'La consommation de tabac en Afrique a augmenté de 57% entre 2000 et 2025, avec les jeunes comme cible principale',
     couleur: '#6B7280',
+    categorie: 'Dépendances',
     mythes: [
       {
         mythe: 'La puff est inoffensive car c\'est juste de la vapeur',
@@ -254,6 +259,7 @@ export const maladies: Maladie[] = [
     ],
     statistiquesAfrique: 'Seulement 1 psychiatre pour 1,4 million d\'habitants en Afrique subsaharienne — 90% des personnes atteintes ne reçoivent aucun traitement',
     couleur: '#06B6D4',
+    categorie: 'Santé mentale',
     mythes: [
       {
         mythe: 'Les maladies mentales sont causées par des esprits ou malédictions',
@@ -295,6 +301,7 @@ export const maladies: Maladie[] = [
     ],
     statistiquesAfrique: '300 000 enfants naissent avec la drépanocytose chaque année dans le monde, dont 75% en Afrique subsaharienne',
     couleur: '#F97316',
+    categorie: 'Génétique',
     mythes: [
       {
         mythe: 'La drépanocytose se guérit avec des plantes',
@@ -339,6 +346,7 @@ export const maladies: Maladie[] = [
     ],
     statistiquesAfrique: 'L\'obésité a triplé en Afrique subsaharienne depuis 1975 — les femmes africaines sont 2 fois plus touchées que les hommes',
     couleur: '#10B981',
+    categorie: 'Métabolique',
     mythes: [
       {
         mythe: 'Être "bien en chair" est signe de bonne santé en Afrique',
@@ -383,6 +391,7 @@ export const maladies: Maladie[] = [
     ],
     statistiquesAfrique: '13% des décès en Afrique sont dus aux maladies cardiovasculaires — un taux qui augmente de 4% par an',
     couleur: '#EF4444',
+    categorie: 'Cardiovasculaire',
     mythes: [
       {
         mythe: 'Les maladies cardiaques touchent surtout les riches',

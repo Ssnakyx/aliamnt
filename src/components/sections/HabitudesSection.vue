@@ -92,7 +92,7 @@ onUnmounted(() => {
 
     <div class="habitudes__container">
       <!-- Header -->
-      <header class="habitudes__header">
+      <header class="habitudes__header" v-reveal.children>
         <span class="habitudes__label">ALIAMNT TE PARLE</span>
         <h2 id="habitudes-title" class="habitudes__title">
           Ces habitudes qui détruisent ta santé
@@ -210,7 +210,7 @@ onUnmounted(() => {
 .habitudes {
   position: relative;
   background-color: var(--color-bg);
-  padding: clamp(5rem, 9vw, 9rem) 0;
+  padding: clamp(6rem, 10vw, 10.5rem) 0;
   overflow: hidden;
 }
 
@@ -251,7 +251,7 @@ onUnmounted(() => {
 .habitudes__title {
   font-family: var(--font-playfair);
   font-size: clamp(2.25rem, 4.5vw, 4rem);
-  font-weight: 800;
+  font-weight: 700;
   color: var(--color-white);
   line-height: 1.1;
   letter-spacing: -0.02em;
@@ -259,8 +259,12 @@ onUnmounted(() => {
 }
 
 .habitudes__title em {
-  font-style: italic;
-  color: #4191ff;
+  font-style: normal;
+  background: var(--gradient-accent);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
 }
 
 .habitudes__subtitle {
@@ -334,7 +338,7 @@ onUnmounted(() => {
   flex-shrink: 0;
   width: 280px;
   aspect-ratio: 3 / 4;
-  border-radius: 16px;
+  border-radius: 20px;
   overflow: hidden;
   scroll-snap-align: start;
   cursor: pointer;

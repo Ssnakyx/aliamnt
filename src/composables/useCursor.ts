@@ -32,13 +32,19 @@ export function useCursor() {
   const onMouseLeave = () => { isVisible.value = false }
   const onMouseEnter = () => { isVisible.value = true }
 
-  const handleHoverIn = () => {
-    isHovered.value = true
-    gsap.to(cursorEl, { scale: 2, duration: 0.3, ease: 'expo.out' })
-  }
-  const handleHoverOut = () => {
-    isHovered.value = false
-    gsap.to(cursorEl, { scale: 1, duration: 0.3, ease: 'expo.out' })
+  // Event delegation — survit aux changements de route (les listeners par
+  // élément ne couvrent pas les nœuds montés après coup)
+  const INTERACTIVE = 'a, button, [data-cursor-hover], input, select, textarea, label'
+
+  const onOver = (e: MouseEvent) => {
+    const target = (e.target as HTMLElement | null)?.closest(INTERACTIVE)
+    if (target && !isHovered.value) {
+      isHovered.value = true
+      gsap.to(cursorEl, { scale: 2, duration: 0.3, ease: 'expo.out' })
+    } else if (!target && isHovered.value) {
+      isHovered.value = false
+      gsap.to(cursorEl, { scale: 1, duration: 0.3, ease: 'expo.out' })
+    }
   }
 
   onMounted(() => {
@@ -53,12 +59,7 @@ export function useCursor() {
     document.addEventListener('mouseup', onMouseUp)
     document.addEventListener('mouseleave', onMouseLeave)
     document.addEventListener('mouseenter', onMouseEnter)
-
-    const interactiveEls = document.querySelectorAll('a, button, [data-cursor-hover]')
-    interactiveEls.forEach(el => {
-      el.addEventListener('mouseenter', handleHoverIn)
-      el.addEventListener('mouseleave', handleHoverOut)
-    })
+    document.addEventListener('mouseover', onOver, { passive: true })
   })
 
   onUnmounted(() => {
@@ -67,6 +68,7 @@ export function useCursor() {
     document.removeEventListener('mouseup', onMouseUp)
     document.removeEventListener('mouseleave', onMouseLeave)
     document.removeEventListener('mouseenter', onMouseEnter)
+    document.removeEventListener('mouseover', onOver)
   })
 
   return { cursorX, cursorY, isVisible, isHovered, isClicking }

@@ -27,7 +27,7 @@ const joinOptions: JoinOption[] = [
     description: 'Rejoignez notre réseau de bénévoles sur le terrain et participez directement aux campagnes de prévention dans vos communautés.',
     labelBtn: 'Postuler →',
     variant: 'outline',
-    route: '/rejoindre/benevole',
+    route: '/contact?sujet=benevole',
   },
   {
     key: 'donateur',
@@ -35,7 +35,7 @@ const joinOptions: JoinOption[] = [
     description: 'Votre contribution finance les campagnes de dépistage, les outils pédagogiques et la présence d\'ALIAMNT sur le terrain.',
     labelBtn: 'Faire un don →',
     variant: 'solid',
-    route: '/rejoindre/don',
+    route: '/contact?sujet=don',
   },
   {
     key: 'partenaire',
@@ -43,7 +43,7 @@ const joinOptions: JoinOption[] = [
     description: 'Institutions, entreprises et ONG : construisons ensemble des programmes de prévention à fort impact pour l\'Afrique.',
     labelBtn: 'Nous contacter →',
     variant: 'outline',
-    route: '/contact',
+    route: '/contact?sujet=partenariat',
   },
 ]
 
@@ -160,7 +160,7 @@ onMounted(() => {
         <p class="cta-desc">
           ALIAMNT fédère des citoyens, des professionnels de santé et des partenaires institutionnels autour d'une cause urgente : prévenir les maladies non transmissibles avant qu'elles ne frappent.
         </p>
-        <button class="cta-btn" type="button" @click="handleNav('/inscription')">
+        <button class="cta-btn" type="button" @click="handleNav('/rejoindre')">
           Je m'inscris
         </button>
         <p class="cta-members">500+ membres actifs</p>
@@ -197,14 +197,14 @@ onMounted(() => {
   gap: 1.25rem;
   padding: 1.5rem;
   border-radius: 16px;
-  border: 1px solid rgba(26, 224, 90, 0.12);
-  background: var(--color-surface, #111611);
+  border: 1px solid rgba(65, 145, 255, 0.12);
+  background: var(--color-surface);
   transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.3s ease;
 }
 
 .join-card:hover {
   transform: translateY(-3px);
-  border-color: rgba(26, 224, 90, 0.28);
+  border-color: rgba(65, 145, 255, 0.3);
 }
 
 .join-card-icon-wrapper {
@@ -212,11 +212,11 @@ onMounted(() => {
   width: 48px;
   height: 48px;
   border-radius: 12px;
-  background: rgba(26, 224, 90, 0.08);
+  background: rgba(65, 145, 255, 0.1);
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--color-green, #1ae05a);
+  color: var(--color-green);
 }
 
 .join-card-icon {
@@ -280,14 +280,15 @@ onMounted(() => {
 }
 
 .join-card-btn--solid:hover {
-  background: #0f8033;
-  border-color: #0f8033;
-  color: var(--color-white, #f5f0e8);
+  background: var(--color-green-dim);
+  border-color: var(--color-green-dim);
+  color: var(--color-white);
 }
 
 /* ---- Right column: CTA bloc ---- */
 .join-cta {
-  background: #161d16;
+  background: var(--color-surface-2);
+  border: 1px solid var(--color-border-subtle);
   border-radius: 24px;
   padding: 3rem;
   display: flex;
@@ -340,8 +341,8 @@ onMounted(() => {
 }
 
 .cta-btn:hover {
-  background: #22f466;
-  box-shadow: 0 0 32px rgba(26, 224, 90, 0.35);
+  background: var(--color-sand);
+  box-shadow: 0 0 32px rgba(65, 145, 255, 0.35);
 }
 
 .cta-members {

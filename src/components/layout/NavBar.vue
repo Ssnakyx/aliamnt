@@ -15,6 +15,7 @@ const navLinks: NavLink[] = [
   { label: 'Maladies', to: '/maladies' },
   { label: 'Campagnes', to: '/campagnes' },
   { label: 'Médias', to: '/media' },
+  { label: 'Test Santé', to: '/evaluation' },
   { label: 'Contact', to: '/contact' },
 ]
 </script>
@@ -118,10 +119,10 @@ const navLinks: NavLink[] = [
 }
 
 .navbar--scrolled {
-  background: rgba(10, 13, 10, 0.85);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border-bottom-color: rgba(26, 224, 90, 0.08);
+  background: rgba(5, 10, 19, 0.65);
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  border-bottom-color: rgba(255, 255, 255, 0.07);
 }
 
 /* ─── Inner layout ──────────────────────────────────────── */
@@ -132,7 +133,12 @@ const navLinks: NavLink[] = [
   max-width: 1280px;
   margin: 0 auto;
   padding: 0 2rem;
-  height: 72px;
+  height: 76px;
+  transition: height 0.4s var(--ease-expo);
+}
+
+.navbar--scrolled .navbar__inner {
+  height: 60px;
 }
 
 /* ─── Logo ──────────────────────────────────────────────── */
@@ -144,13 +150,18 @@ const navLinks: NavLink[] = [
 }
 
 .navbar__logo-img {
-  height: 48px;
+  height: 44px;
   width: auto;
   object-fit: contain;
-  border-radius: 6px;
+  border-radius: 8px;
   background: #fff;
   padding: 3px 6px;
   display: block;
+  transition: height 0.4s var(--ease-expo);
+}
+
+.navbar--scrolled .navbar__logo-img {
+  height: 38px;
 }
 
 /* ─── Desktop links ─────────────────────────────────────── */
@@ -162,7 +173,7 @@ const navLinks: NavLink[] = [
 .navbar__links {
   display: flex;
   align-items: center;
-  gap: 2rem;
+  gap: 1.6rem;
   list-style: none;
   margin: 0;
   padding: 0;
@@ -171,11 +182,12 @@ const navLinks: NavLink[] = [
 .navbar__link {
   font-family: var(--font-dm, 'DM Sans', sans-serif);
   font-weight: 500;
-  font-size: 0.9375rem;
+  font-size: 0.9rem;
   color: var(--color-white, #f5f0e8);
   text-decoration: none;
   transition: color 0.3s ease;
   position: relative;
+  white-space: nowrap;
 }
 
 .navbar__link::after {
@@ -276,11 +288,13 @@ const navLinks: NavLink[] = [
 /* ─── Mobile menu ───────────────────────────────────────── */
 .navbar__mobile {
   position: fixed;
-  top: 72px;
+  top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  background: var(--color-bg, #0a0d0a);
+  background: rgba(5, 10, 19, 0.92);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -349,7 +363,7 @@ const navLinks: NavLink[] = [
 }
 
 /* ─── Responsive ────────────────────────────────────────── */
-@media (max-width: 767px) {
+@media (max-width: 1023px) {
   .navbar__nav,
   .navbar__cta-wrap {
     display: none;

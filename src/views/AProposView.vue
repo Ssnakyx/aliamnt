@@ -1,7 +1,7 @@
 <template>
   <main class="page-a-propos">
     <section class="hero">
-      <div class="container">
+      <div class="container" v-reveal.children>
         <span class="label">Qui sommes-nous</span>
         <h1 class="title">Une jeunesse africaine <em>engagée</em> pour la santé</h1>
         <p class="subtitle">
@@ -13,7 +13,7 @@
 
     <section class="about-section">
       <div class="container">
-        <div class="about-grid">
+        <div class="about-grid" v-reveal.children>
           <div class="about-text">
             <h2>Notre histoire</h2>
             <p>
@@ -41,11 +41,35 @@
       </div>
     </section>
 
+    <section class="timeline-section">
+      <div class="container">
+        <span class="label">Notre parcours</span>
+        <h2 class="section-title">De Niamey à <em>l'Afrique francophone</em></h2>
+        <div class="timeline">
+          <div class="timeline__line" aria-hidden="true" />
+          <div
+            v-for="(etape, i) in timeline"
+            :key="etape.annee"
+            class="timeline-item"
+            :class="{ 'timeline-item--future': etape.futur, 'timeline-item--right': i % 2 === 1 }"
+            v-reveal="{ y: 30 }"
+          >
+            <span class="timeline-dot" aria-hidden="true" />
+            <div class="timeline-card">
+              <span class="timeline-year">{{ etape.annee }}</span>
+              <h3 class="timeline-titre">{{ etape.titre }}</h3>
+              <p class="timeline-desc">{{ etape.desc }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <section class="team-section">
       <div class="container">
         <span class="label">L'équipe</span>
         <h2 class="section-title">Les visages derrière la mission</h2>
-        <div class="team-grid">
+        <div class="team-grid" v-reveal.children>
           <div class="team-card" v-for="member in team" :key="member.nom">
             <div class="avatar" :style="{ background: member.couleur }">
               <span>{{ member.initiales }}</span>
@@ -67,7 +91,7 @@
           dédiée à la lutte contre les maladies non transmissibles.
         </p>
 
-        <div class="ncd-card">
+        <div class="ncd-card" v-reveal>
           <div class="ncd-image-col">
             <img
               src="/Images/ncd_alliance.jpg"
@@ -93,7 +117,7 @@
 
     <section class="impact-section">
       <div class="container">
-        <div class="impact-grid">
+        <div class="impact-grid" v-reveal.children>
           <div class="impact-stat" v-for="stat in impactStats" :key="stat.label">
             <span class="impact-number">{{ stat.valeur }}</span>
             <span class="impact-label">{{ stat.label }}</span>
@@ -108,6 +132,36 @@
 interface Valeur { num: string; titre: string; desc: string }
 interface Membre { nom: string; initiales: string; role: string; bio: string; couleur: string }
 interface ImpactStat { valeur: string; label: string }
+interface Etape { annee: string; titre: string; desc: string; futur?: boolean }
+
+const timeline: Etape[] = [
+  {
+    annee: '2020',
+    titre: 'Naissance à Niamey',
+    desc: 'Un groupe de jeunes professionnels de santé lance ALIAMNT sur les réseaux sociaux, face au silence autour des MNT.',
+  },
+  {
+    annee: '2021',
+    titre: 'Du digital au terrain',
+    desc: 'Premières campagnes de sensibilisation et de dépistage dans les quartiers et les écoles du Niger.',
+  },
+  {
+    annee: '2022',
+    titre: 'Expansion régionale',
+    desc: 'Le Burkina Faso puis la Côte d\'Ivoire rejoignent le mouvement : ALIAMNT devient panafricaine.',
+  },
+  {
+    annee: '2024',
+    titre: 'Reconnaissance mondiale',
+    desc: 'ALIAMNT devient membre officiel de NCD Alliance et dépasse les 12 000 personnes sensibilisées avec #NonAuPuff.',
+  },
+  {
+    annee: '2030',
+    titre: 'Le cap',
+    desc: 'Couvrir toute l\'Afrique francophone avec un réseau de jeunes ambassadeurs de la prévention.',
+    futur: true,
+  },
+]
 
 const values: Valeur[] = [
   { num: '01', titre: 'Intégrité', desc: 'Nous agissons avec transparence et rigueur scientifique dans toutes nos communications.' },
@@ -163,7 +217,14 @@ const impactStats: ImpactStat[] = [
   max-width: 800px;
   margin: 0 auto;
 }
-.title em { color: var(--color-green); font-style: italic; }
+.title em {
+  font-style: normal;
+  background: var(--gradient-accent);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+}
 
 .subtitle {
   font-family: var(--font-dm);
@@ -230,6 +291,128 @@ const impactStats: ImpactStat[] = [
   line-height: 1.6;
 }
 
+/* ── Timeline ── */
+.timeline-section {
+  padding: clamp(5rem, 8vw, 8rem) 0;
+  background: var(--color-bg);
+  text-align: center;
+}
+
+.timeline {
+  position: relative;
+  max-width: 760px;
+  margin: 3.5rem auto 0;
+  text-align: left;
+}
+
+.timeline__line {
+  position: absolute;
+  top: 8px;
+  bottom: 8px;
+  left: 50%;
+  width: 1.5px;
+  transform: translateX(-50%);
+  background: linear-gradient(
+    to bottom,
+    rgba(65, 145, 255, 0.45) 0%,
+    rgba(65, 145, 255, 0.18) 75%,
+    transparent 100%
+  );
+}
+
+.timeline-item {
+  position: relative;
+  width: 50%;
+  padding-right: 2.5rem;
+  margin-bottom: 2.25rem;
+}
+
+.timeline-item--right {
+  margin-left: 50%;
+  padding-right: 0;
+  padding-left: 2.5rem;
+}
+
+.timeline-dot {
+  position: absolute;
+  top: 8px;
+  right: -5.5px;
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  background: var(--color-green);
+  box-shadow: 0 0 14px rgba(65, 145, 255, 0.6);
+}
+
+.timeline-item--right .timeline-dot {
+  right: auto;
+  left: -5.5px;
+}
+
+.timeline-item--future .timeline-dot {
+  background: transparent;
+  border: 1.5px dashed var(--color-green);
+  box-shadow: none;
+}
+
+.timeline-card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: 14px;
+  padding: 1.4rem 1.5rem;
+  transition: border-color 0.3s, transform 0.4s var(--ease-expo);
+}
+
+.timeline-card:hover {
+  border-color: rgba(65, 145, 255, 0.3);
+  transform: translateY(-3px);
+}
+
+.timeline-item--future .timeline-card {
+  border-style: dashed;
+  background: transparent;
+}
+
+.timeline-year {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.15em;
+  color: var(--color-green);
+}
+
+.timeline-titre {
+  font-family: var(--font-playfair);
+  font-size: 1.1rem;
+  color: var(--color-white);
+  margin: 0.4rem 0 0.45rem;
+}
+
+.timeline-desc {
+  font-family: var(--font-dm);
+  font-size: 0.85rem;
+  color: var(--color-gray);
+  line-height: 1.65;
+  margin: 0;
+}
+
+@media (max-width: 640px) {
+  .timeline__line { left: 6px; transform: none; }
+
+  .timeline-item,
+  .timeline-item--right {
+    width: 100%;
+    margin-left: 0;
+    padding-left: 2rem;
+    padding-right: 0;
+  }
+
+  .timeline-dot,
+  .timeline-item--right .timeline-dot {
+    left: 1px;
+    right: auto;
+  }
+}
+
 .team-section {
   padding: clamp(5rem, 8vw, 8rem) 0;
   background: var(--color-surface);
@@ -242,7 +425,14 @@ const impactStats: ImpactStat[] = [
   color: var(--color-white);
   margin-bottom: 3rem;
 }
-.section-title em { color: #4191FF; font-style: italic; }
+.section-title em {
+  font-style: normal;
+  background: var(--gradient-accent);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+}
 
 .team-grid {
   display: grid;

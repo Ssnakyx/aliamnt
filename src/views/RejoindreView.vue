@@ -1,7 +1,7 @@
 <template>
   <main class="page-rejoindre">
     <section class="hero">
-      <div class="container">
+      <div class="container" v-reveal.children>
         <span class="label">Rejoindre ALIAMNT</span>
         <h1 class="title">Devenez acteur du <em>changement</em></h1>
         <p class="subtitle">
@@ -13,7 +13,7 @@
 
     <section class="options-section">
       <div class="container">
-        <div class="options-grid">
+        <div class="options-grid" v-reveal.children>
           <div class="option-card" v-for="opt in options" :key="opt.titre">
             <span class="option-number">{{ opt.num }}</span>
             <div class="option-icon" v-html="opt.svg"></div>
@@ -22,7 +22,7 @@
             <ul>
               <li v-for="avantage in opt.avantages" :key="avantage">{{ avantage }}</li>
             </ul>
-            <a href="/contact" class="option-cta">{{ opt.cta }}</a>
+            <RouterLink :to="opt.lien" class="option-cta">{{ opt.cta }}</RouterLink>
           </div>
         </div>
       </div>
@@ -31,12 +31,15 @@
 </template>
 
 <script setup lang="ts">
+import { RouterLink } from 'vue-router'
+
 interface Option {
   num: string
   titre: string
   description: string
   avantages: string[]
   cta: string
+  lien: string
   svg: string
 }
 
@@ -47,6 +50,7 @@ const options: Option[] = [
     description: 'Rejoignez nos équipes terrain pour les campagnes de sensibilisation et les événements.',
     avantages: ['Participer aux campagnes', 'Formation santé publique', 'Réseau de professionnels', 'Certificat de bénévolat'],
     cta: 'Postuler comme bénévole →',
+    lien: '/contact?sujet=benevole',
     svg: '<svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>',
   },
   {
@@ -55,6 +59,7 @@ const options: Option[] = [
     description: 'Soutenez financièrement nos campagnes et permettez-nous d\'étendre notre impact.',
     avantages: ['Impact direct mesurable', 'Rapports d\'impact', 'Déduction fiscale éligible', 'Mention sur nos supports'],
     cta: 'Faire un don →',
+    lien: '/contact?sujet=don',
     svg: '<svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>',
   },
   {
@@ -63,6 +68,7 @@ const options: Option[] = [
     description: 'Institutions, entreprises, médias — collaborez avec nous pour amplifier l\'impact.',
     avantages: ['Visibilité partenariale', 'Co-création de contenu', 'Accès aux données d\'impact', 'Réseau africain santé'],
     cta: 'Nous contacter →',
+    lien: '/contact?sujet=partenariat',
     svg: '<svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M16 8h6"/><path d="M19 5v6"/><path d="M21 19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11z"/></svg>',
   },
 ]
@@ -100,7 +106,14 @@ const options: Option[] = [
   letter-spacing: -0.02em;
   line-height: 1.1;
 }
-.title em { color: var(--color-green); font-style: italic; }
+.title em {
+  font-style: normal;
+  background: var(--gradient-accent);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+}
 
 .subtitle {
   font-family: var(--font-dm);

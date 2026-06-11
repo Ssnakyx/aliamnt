@@ -5,10 +5,23 @@
 }
 
 html {
-  scroll-behavior: smooth;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
+}
+
+/* Lenis gère le smooth scroll — le natif doit rester désactivé */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+.lenis.lenis-stopped {
+  overflow: hidden;
 }
 
 body {
@@ -50,8 +63,9 @@ ul, ol {
 
 h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-playfair);
-  line-height: 1.1;
-  font-weight: 700;
+  line-height: 1.08;
+  font-weight: 600;
+  letter-spacing: -0.02em;
 }
 
 ::selection {

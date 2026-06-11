@@ -3,7 +3,7 @@
 
     <!-- Hero -->
     <section class="hero">
-      <div class="container">
+      <div class="container" v-reveal.children>
         <span class="hero-label">MÉDIAS &amp; PUBLICATIONS</span>
         <h1 class="hero-title">Nos contenus qui <em>impactent</em></h1>
         <p class="hero-subtitle">Retrouvez nos publications, campagnes et contenus éducatifs.</p>
@@ -13,12 +13,32 @@
     <!-- Instagram grid -->
     <section class="gallery-section">
       <div class="container">
-        <div class="insta-grid">
+        <!-- Filtres par tag -->
+        <div class="tag-filters" role="group" aria-label="Filtrer par catégorie">
+          <button
+            v-for="tag in tags"
+            :key="tag"
+            type="button"
+            class="tag-pill"
+            :class="{ 'is-active': activeTag === tag }"
+            @click="activeTag = tag"
+          >
+            {{ tag }}
+          </button>
+        </div>
+
+        <TransitionGroup name="posts" tag="div" class="insta-grid">
           <article
-            v-for="post in posts"
+            v-for="post in filteredPosts"
             :key="post.id"
             class="post-card"
-            :class="{ 'post-card--tall': post.size === 'tall' }"
+            :class="{ 'post-card--tall': post.size === 'tall' && activeTag === 'Tout' }"
+            tabindex="0"
+            role="button"
+            :aria-label="`Agrandir : ${post.caption}`"
+            @click="openLightbox(post)"
+            @keydown.enter.prevent="openLightbox(post)"
+            @keydown.space.prevent="openLightbox(post)"
           >
             <img
               :src="`/Images/${post.image}`"
@@ -31,8 +51,13 @@
               <span class="post-tag" :style="{ color: post.tagColor }">{{ post.tag }}</span>
               <span class="post-caption">{{ post.caption }}</span>
             </footer>
+            <span class="post-zoom" aria-hidden="true">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" aria-hidden="true">
+                <circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3M11 8v6M8 11h6"/>
+              </svg>
+            </span>
           </article>
-        </div>
+        </TransitionGroup>
       </div>
     </section>
 
@@ -54,10 +79,53 @@
       </div>
     </section>
 
+    <!-- ── Lightbox ─────────────────────────── -->
+    <Teleport to="body">
+      <Transition name="lb">
+        <div
+          v-if="lightboxPost"
+          class="lightbox"
+          role="dialog"
+          aria-modal="true"
+          :aria-label="lightboxPost.caption"
+          @click.self="closeLightbox"
+        >
+          <button class="lb-close" type="button" aria-label="Fermer" @click="closeLightbox">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" aria-hidden="true">
+              <path d="M18 6L6 18M6 6l12 12"/>
+            </svg>
+          </button>
+
+          <button class="lb-nav lb-nav--prev" type="button" aria-label="Image précédente" @click.stop="lightboxStep(-1)">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M15 18l-6-6 6-6"/>
+            </svg>
+          </button>
+
+          <figure class="lb-figure" @click.stop>
+            <img :src="`/Images/${lightboxPost.image}`" :alt="lightboxPost.caption" class="lb-img" />
+            <figcaption class="lb-caption">
+              <span class="lb-tag" :style="{ color: lightboxPost.tagColor }">{{ lightboxPost.tag }}</span>
+              <span class="lb-text">{{ lightboxPost.caption }}</span>
+              <span class="lb-count">{{ lightboxIndex + 1 }} / {{ filteredPosts.length }}</span>
+            </figcaption>
+          </figure>
+
+          <button class="lb-nav lb-nav--next" type="button" aria-label="Image suivante" @click.stop="lightboxStep(1)">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M9 6l6 6-6 6"/>
+            </svg>
+          </button>
+        </div>
+      </Transition>
+    </Teleport>
+
   </main>
 </template>
 
 <script setup lang="ts">
+import { ref, computed, onMounted, onUnmounted } from 'vue'
+
 interface InstaPost {
   id: string
   image: string
@@ -178,6 +246,52 @@ const posts: InstaPost[] = [
     size: 'normal',
   },
 ]
+
+/* ── Filtres ───────────────────────────────── */
+const activeTag = ref('Tout')
+
+const tags = computed(() => ['Tout', ...new Set(posts.map(p => p.tag))])
+
+const filteredPosts = computed(() =>
+  activeTag.value === 'Tout' ? posts : posts.filter(p => p.tag === activeTag.value),
+)
+
+/* ── Lightbox ──────────────────────────────── */
+const lightboxPost = ref<InstaPost | null>(null)
+
+const lightboxIndex = computed(() =>
+  lightboxPost.value ? filteredPosts.value.findIndex(p => p.id === lightboxPost.value!.id) : -1,
+)
+
+function openLightbox(post: InstaPost) {
+  lightboxPost.value = post
+  document.body.style.overflow = 'hidden'
+}
+
+function closeLightbox() {
+  lightboxPost.value = null
+  document.body.style.overflow = ''
+}
+
+function lightboxStep(delta: number) {
+  if (!lightboxPost.value) return
+  const list = filteredPosts.value
+  const next = (lightboxIndex.value + delta + list.length) % list.length
+  lightboxPost.value = list[next]
+}
+
+function onKeydown(e: KeyboardEvent) {
+  if (!lightboxPost.value) return
+  if (e.key === 'Escape') closeLightbox()
+  else if (e.key === 'ArrowLeft') lightboxStep(-1)
+  else if (e.key === 'ArrowRight') lightboxStep(1)
+}
+
+onMounted(() => document.addEventListener('keydown', onKeydown))
+onUnmounted(() => {
+  document.removeEventListener('keydown', onKeydown)
+  document.body.style.overflow = ''
+})
 </script>
 
 <style scoped>
@@ -214,15 +328,19 @@ const posts: InstaPost[] = [
 .hero-title {
   font-family: var(--font-playfair);
   font-size: clamp(2.5rem, 5vw, 4.5rem);
-  font-weight: 800;
+  font-weight: 700;
   color: var(--color-white);
   letter-spacing: -0.025em;
   line-height: 1.1;
   margin: 0 0 1.25rem;
 }
 .hero-title em {
-  font-style: italic;
-  color: var(--color-green);
+  font-style: normal;
+  background: var(--gradient-accent);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
 }
 
 .hero-subtitle {
@@ -239,12 +357,49 @@ const posts: InstaPost[] = [
   padding: clamp(3rem, 6vw, 6rem) 0;
 }
 
+/* ── Filtres ─────────────────────────────── */
+.tag-filters {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin-bottom: 1.75rem;
+}
+
+.tag-pill {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-gray-light);
+  background: transparent;
+  border: 1px solid var(--color-border-subtle);
+  border-radius: 9999px;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  transition: color 0.25s, border-color 0.25s, background 0.25s;
+}
+
+.tag-pill:hover { color: var(--color-white); border-color: rgba(65, 145, 255, 0.4); }
+
+.tag-pill.is-active {
+  color: #07101E;
+  background: var(--color-green);
+  border-color: var(--color-green);
+  font-weight: 700;
+}
+
+.tag-pill:focus-visible {
+  outline: 2px solid var(--color-green);
+  outline-offset: 2px;
+}
+
 /* ── Instagram masonry grid ──────────────── */
 .insta-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   grid-auto-rows: 260px;
   gap: 0.75rem;
+  position: relative; /* contient les cartes sortantes (position: absolute) */
 }
 
 /* ── Post card ───────────────────────────── */
@@ -260,9 +415,15 @@ const posts: InstaPost[] = [
   grid-row: span 2;
 }
 
-.post-card:hover {
+.post-card:hover,
+.post-card:focus-visible {
   transform: scale(1.02);
   box-shadow: 0 16px 48px rgba(0, 0, 0, 0.5);
+}
+
+.post-card:focus-visible {
+  outline: 2px solid var(--color-green);
+  outline-offset: 2px;
 }
 
 .post-img {
@@ -327,6 +488,143 @@ const posts: InstaPost[] = [
   text-overflow: ellipsis;
   font-weight: 500;
 }
+
+/* Zoom hint */
+.post-zoom {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: rgba(7, 16, 30, 0.6);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  color: var(--color-white);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.post-card:hover .post-zoom { opacity: 1; }
+
+/* Transitions de filtre */
+.posts-enter-active { transition: opacity 0.4s, transform 0.45s var(--ease-expo); }
+.posts-leave-active { transition: opacity 0.15s; position: absolute; opacity: 0; }
+.posts-enter-from { opacity: 0; transform: scale(0.96); }
+.posts-leave-to { opacity: 0; }
+.posts-move { transition: transform 0.45s var(--ease-expo); }
+
+/* ── Lightbox ────────────────────────────── */
+.lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background: rgba(4, 9, 18, 0.92);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(1rem, 4vw, 3rem);
+}
+
+.lb-figure {
+  margin: 0;
+  max-width: min(860px, 92vw);
+  max-height: 86vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.lb-img {
+  max-width: 100%;
+  max-height: calc(86vh - 70px);
+  object-fit: contain;
+  border-radius: 12px;
+  box-shadow: 0 40px 100px rgba(0, 0, 0, 0.7);
+}
+
+.lb-caption {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem 0.25rem 0;
+}
+
+.lb-tag {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  font-weight: 600;
+}
+
+.lb-text {
+  font-family: var(--font-dm);
+  font-size: 0.9rem;
+  color: var(--color-white);
+  flex: 1;
+}
+
+.lb-count {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  color: var(--color-gray);
+}
+
+.lb-close {
+  position: absolute;
+  top: 1.25rem;
+  right: 1.25rem;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--color-white);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.25s, transform 0.25s;
+  z-index: 2;
+}
+
+.lb-close:hover { background: rgba(255, 255, 255, 0.12); transform: rotate(90deg); }
+
+.lb-nav {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--color-white);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.25s, border-color 0.25s;
+  flex-shrink: 0;
+  z-index: 2;
+}
+
+.lb-nav:hover { background: rgba(65, 145, 255, 0.2); border-color: var(--color-green); }
+
+.lb-nav--prev { margin-right: clamp(0.5rem, 2vw, 1.5rem); }
+.lb-nav--next { margin-left: clamp(0.5rem, 2vw, 1.5rem); }
+
+.lb-close:focus-visible,
+.lb-nav:focus-visible {
+  outline: 2px solid var(--color-green);
+  outline-offset: 2px;
+}
+
+.lb-enter-active { transition: opacity 0.3s; }
+.lb-leave-active { transition: opacity 0.25s; }
+.lb-enter-from, .lb-leave-to { opacity: 0; }
 
 /* ── CTA section ─────────────────────────── */
 .cta-section {
@@ -403,5 +701,7 @@ const posts: InstaPost[] = [
     text-align: center;
     align-items: center;
   }
+
+  .lb-nav { display: none; }
 }
 </style>

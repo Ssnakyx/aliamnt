@@ -17,17 +17,21 @@ const navLinks: NavLink[] = [
   { label: 'Maladies', to: '/maladies' },
   { label: 'Campagnes', to: '/campagnes' },
   { label: 'Médias', to: '/media' },
+  { label: 'Test Santé', to: '/evaluation' },
   { label: 'Rejoindre', to: '/rejoindre' },
   { label: 'Contact', to: '/contact' },
 ]
 
 const diseaseLinks: DiseaseLink[] = [
-  { label: 'Diabète', to: '/maladies' },
-  { label: 'Hypertension', to: '/maladies' },
-  { label: 'Maladies cardiovasculaires', to: '/maladies' },
-  { label: 'Obésité', to: '/maladies' },
-  { label: 'Cancer', to: '/maladies' },
+  { label: 'Diabète', to: '/maladies/diabete' },
+  { label: 'Hypertension', to: '/maladies/hypertension' },
+  { label: 'Maladies cardiaques', to: '/maladies/maladies-cardiaques' },
+  { label: 'Obésité', to: '/maladies/obesite' },
+  { label: 'Cancer', to: '/maladies/cancer' },
+  { label: 'Toutes les maladies →', to: '/maladies' },
 ]
+
+const currentYear = new Date().getFullYear()
 </script>
 
 <template>
@@ -178,13 +182,16 @@ const diseaseLinks: DiseaseLink[] = [
       <!-- Bottom bar -->
       <div class="footer__bottom">
         <p class="footer__copyright">
-          &copy; 2024 ALIAMNT. Tous droits réservés.
+          &copy; {{ currentYear }} ALIAMNT. Tous droits réservés.
         </p>
         <p class="footer__made-with">
           Fait avec ❤️ pour l'Afrique
         </p>
       </div>
     </div>
+
+    <!-- Wordmark géant -->
+    <div class="footer__watermark" aria-hidden="true">ALIAMNT</div>
   </footer>
 </template>
 
@@ -193,12 +200,33 @@ const diseaseLinks: DiseaseLink[] = [
 .footer {
   background: var(--color-bg, #0a0d0a);
   position: relative;
+  overflow: hidden;
 }
 
 .footer__separator {
   width: 100%;
   height: 1px;
-  background: rgba(26, 224, 90, 0.15);
+  background: var(--color-border-subtle);
+}
+
+/* ─── Wordmark géant ───────────────────────────────────── */
+.footer__watermark {
+  font-family: var(--font-playfair);
+  font-weight: 700;
+  font-size: clamp(4rem, 16.5vw, 15rem);
+  line-height: 0.78;
+  letter-spacing: -0.02em;
+  text-align: center;
+  white-space: nowrap;
+  background: linear-gradient(180deg, rgba(65, 145, 255, 0.16) 0%, rgba(167, 139, 250, 0.05) 55%, transparent 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+  user-select: none;
+  pointer-events: none;
+  margin-top: 1rem;
+  transform: translateY(0.12em);
 }
 
 /* ─── Container ─────────────────────────────────────────── */
@@ -328,7 +356,7 @@ const diseaseLinks: DiseaseLink[] = [
   align-items: center;
   justify-content: space-between;
   padding-top: 1.5rem;
-  border-top: 1px solid rgba(26, 224, 90, 0.08);
+  border-top: 1px solid rgba(65, 145, 255, 0.08);
 }
 
 .footer__copyright,

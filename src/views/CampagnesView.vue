@@ -19,23 +19,32 @@
             :key="c.id"
             class="campagne-item"
             :style="{ '--accent': c.couleurTag }"
+            v-reveal="{ y: 36 }"
           >
             <div class="campagne-media">
               <img
-                :src="c.image"
+                :src="activeImage[c.id] ?? c.image"
                 :alt="c.titre"
                 class="campagne-img"
                 loading="lazy"
               />
               <div v-if="c.images && c.images.length" class="campagne-gallery">
-                <img
-                  v-for="(img, i) in c.images"
-                  :key="i"
-                  :src="img"
-                  :alt="`${c.titre} — photo ${i + 2}`"
-                  class="gallery-thumb"
-                  loading="lazy"
-                />
+                <button
+                  v-for="(img, i) in [c.image, ...c.images]"
+                  :key="img"
+                  type="button"
+                  class="gallery-thumb-btn"
+                  :class="{ 'is-active': (activeImage[c.id] ?? c.image) === img }"
+                  :aria-label="`Afficher la photo ${i + 1} de ${c.titre}`"
+                  @click="activeImage[c.id] = img"
+                >
+                  <img
+                    :src="img"
+                    :alt="''"
+                    class="gallery-thumb"
+                    loading="lazy"
+                  />
+                </button>
               </div>
             </div>
 
@@ -55,7 +64,11 @@
               <p class="campagne-desc">{{ c.description }}</p>
 
               <div class="campagne-reach">
-                <span class="reach-number">{{ formatReach(c.reach) }}</span>
+                <span
+                  class="reach-number"
+                  :ref="el => setReachRef(el as HTMLElement | null, index)"
+                  :data-reach="c.reach"
+                >0</span>
                 <span class="reach-label">personnes touchées</span>
               </div>
             </div>
@@ -73,7 +86,12 @@
 </template>
 
 <script setup lang="ts">
+import { ref, reactive, onMounted, onUnmounted } from 'vue'
+import gsap from 'gsap'
 import { campagnes } from '@/data/campagnes'
+
+/** Image affichée en grand pour chaque campagne (la vignette cliquée). */
+const activeImage = reactive<Record<string, string>>({})
 
 function formatDate(dateStr: string): string {
   return new Date(dateStr).toLocaleDateString('fr-FR', { year: 'numeric', month: 'long' })
@@ -84,6 +102,44 @@ function formatReach(reach: number): string {
   if (reach >= 1_000) return `${Math.round(reach / 1_000)}K`
   return String(reach)
 }
+
+/* ── Compteurs animés au scroll ─────────────── */
+const reachRefs = ref<HTMLElement[]>([])
+let observer: IntersectionObserver | null = null
+
+function setReachRef(el: HTMLElement | null, index: number): void {
+  if (el) reachRefs.value[index] = el
+}
+
+onMounted(() => {
+  observer = new IntersectionObserver(
+    entries => {
+      for (const entry of entries) {
+        if (!entry.isIntersecting) continue
+        const el = entry.target as HTMLElement
+        const target = Number(el.dataset.reach ?? 0)
+        const counter = { value: 0 }
+        gsap.to(counter, {
+          value: target,
+          duration: 1.8,
+          ease: 'power2.out',
+          onUpdate: () => { el.textContent = formatReach(Math.round(counter.value)) },
+        })
+        observer?.unobserve(el)
+      }
+    },
+    { threshold: 0.4 },
+  )
+  reachRefs.value.forEach(el => observer?.observe(el))
+
+  gsap.fromTo(
+    '.hero .container > *',
+    { opacity: 0, y: 24 },
+    { opacity: 1, y: 0, duration: 0.7, stagger: 0.1, ease: 'expo.out' },
+  )
+})
+
+onUnmounted(() => observer?.disconnect())
 </script>
 
 <style scoped>
@@ -119,7 +175,14 @@ function formatReach(reach: number): string {
   letter-spacing: -0.02em;
   line-height: 1.1;
 }
-.title em { color: var(--color-green); font-style: italic; }
+.title em {
+  font-style: normal;
+  background: var(--gradient-accent);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+}
 
 .subtitle {
   font-family: var(--font-dm);
@@ -187,19 +250,43 @@ function formatReach(reach: number): string {
 }
 .campagne-gallery::-webkit-scrollbar { display: none; }
 
-.gallery-thumb {
+.gallery-thumb-btn {
   flex-shrink: 0;
+  padding: 0;
+  border: 2px solid transparent;
+  border-radius: 10px;
+  background: none;
+  cursor: pointer;
+  overflow: hidden;
+  transition: border-color 0.25s, opacity 0.2s;
+  line-height: 0;
+}
+
+.gallery-thumb-btn.is-active {
+  border-color: var(--accent, var(--color-green));
+}
+
+.gallery-thumb-btn:focus-visible {
+  outline: 2px solid var(--color-green);
+  outline-offset: 2px;
+}
+
+.gallery-thumb {
   width: auto;
-  height: 80px;
+  height: 76px;
   aspect-ratio: 1 / 1;
   object-fit: cover;
   border-radius: 8px;
   background: var(--color-surface);
-  opacity: 0.75;
-  transition: opacity 0.2s;
-  cursor: pointer;
+  opacity: 0.7;
+  transition: opacity 0.2s, transform 0.3s var(--ease-expo);
+  display: block;
 }
-.gallery-thumb:hover { opacity: 1; }
+
+.gallery-thumb-btn:hover .gallery-thumb,
+.gallery-thumb-btn.is-active .gallery-thumb { opacity: 1; }
+
+.gallery-thumb-btn:hover .gallery-thumb { transform: scale(1.05); }
 
 /* ── Content column ── */
 .campagne-content {
@@ -261,10 +348,11 @@ function formatReach(reach: number): string {
 .reach-number {
   font-family: var(--font-mono);
   font-size: clamp(1.75rem, 3vw, 2.5rem);
-  color: #4191FF;
+  color: var(--accent, #4191FF);
   font-weight: 700;
   letter-spacing: -0.03em;
   line-height: 1;
+  min-width: 3ch;
 }
 
 .reach-label {

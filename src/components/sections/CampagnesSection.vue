@@ -101,8 +101,9 @@ onMounted(() => {
   if (cardsEl.value) {
     const cards = cardsEl.value.querySelectorAll('.acard')
     gsap.fromTo(cards,
-      { opacity: 0, y: 40, scale: 0.97 },
-      { opacity: 1, y: 0, scale: 1, duration: 0.65, stagger: 0.1, ease: 'expo.out',
+      { opacity: 0, y: 44, scale: 0.97, filter: 'blur(10px)' },
+      { opacity: 1, y: 0, scale: 1, filter: 'blur(0px)', duration: 0.8, stagger: 0.1, ease: 'power3.out',
+        clearProps: 'filter,transform',
         scrollTrigger: { trigger: cardsEl.value, start: 'top 80%', once: true } }
     )
   }
@@ -112,7 +113,7 @@ onMounted(() => {
 <style scoped>
 .camp-section {
   background: var(--color-bg);
-  padding: clamp(5rem, 9vw, 9rem) 0;
+  padding: clamp(6rem, 10vw, 10.5rem) 0;
 }
 
 .container {
@@ -143,13 +144,20 @@ onMounted(() => {
 .sect-title {
   font-family: var(--font-playfair);
   font-size: clamp(2.25rem, 4.5vw, 4rem);
-  font-weight: 800;
+  font-weight: 700;
   color: var(--color-white);
   line-height: 1.1;
   letter-spacing: -0.025em;
   margin: 0;
 }
-.sect-title em { font-style: normal; color: var(--color-green); }
+.sect-title em {
+  font-style: normal;
+  background: var(--gradient-accent);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+}
 
 .sect-all {
   display: flex;
@@ -173,7 +181,8 @@ onMounted(() => {
 
 /* ── Card base ───────────────────────────── */
 .acard {
-  border-radius: 24px;
+  border: 1px solid var(--color-border-subtle);
+  border-radius: 28px;
   overflow: hidden;
   display: flex;
   flex-direction: column;
@@ -217,7 +226,7 @@ onMounted(() => {
 .acard-title {
   font-family: var(--font-playfair);
   font-size: clamp(1.35rem, 1.8vw, 1.75rem);
-  font-weight: 800;
+  font-weight: 700;
   color: var(--color-white);
   line-height: 1.15;
   letter-spacing: -0.02em;
@@ -278,7 +287,7 @@ onMounted(() => {
 .card-glare {
   position: absolute;
   inset: 0;
-  border-radius: 24px;
+  border-radius: 28px;
   pointer-events: none;
   z-index: 4;
   opacity: 0;

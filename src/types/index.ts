@@ -1,3 +1,11 @@
+export type CategorieMaladie =
+  | 'Cardiovasculaire'
+  | 'Métabolique'
+  | 'Cancers'
+  | 'Dépendances'
+  | 'Santé mentale'
+  | 'Génétique'
+
 export interface Maladie {
   id: string
   slug: string
@@ -10,6 +18,7 @@ export interface Maladie {
   prevention: string[]
   statistiquesAfrique: string
   couleur: string
+  categorie: CategorieMaladie
   mythes: { mythe: string; realite: string }[]
 }
 

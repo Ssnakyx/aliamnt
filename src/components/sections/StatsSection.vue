@@ -126,9 +126,9 @@ const icons: Record<IconName, string> = {
 
 <style scoped>
 .stats {
-  background-color: var(--color-surface);
-  border-top: 1px solid rgba(26, 224, 90, 0.12);
-  padding-block: clamp(5rem, 8vw, 8rem);
+  background-color: var(--color-bg);
+  border-top: 1px solid var(--color-border-subtle);
+  padding-block: clamp(5.5rem, 9vw, 9rem);
 }
 
 .stats__inner {
@@ -148,6 +148,8 @@ const icons: Record<IconName, string> = {
   display: flex;
   flex-direction: column;
   gap: 0;
+  padding-left: 1.5rem;
+  border-left: 1px solid var(--color-border-subtle);
 }
 
 .stat__icon {
@@ -165,12 +167,16 @@ const icons: Record<IconName, string> = {
 
 /* Applied via defineComponent render fn — need global reach within scoped */
 :deep(.stat__number) {
-  font-family: var(--font-mono);
-  font-size: clamp(2.5rem, 5vw, 4rem);
-  color: var(--color-green);
-  letter-spacing: -0.02em;
-  font-weight: 400;
+  font-family: var(--font-playfair);
+  font-size: clamp(2.75rem, 5.5vw, 4.5rem);
+  letter-spacing: -0.03em;
+  font-weight: 600;
   white-space: nowrap;
+  background: var(--gradient-accent);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
 }
 
 .stat__label {

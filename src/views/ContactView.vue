@@ -1,7 +1,7 @@
 <template>
   <main class="page-contact">
     <section class="hero">
-      <div class="container">
+      <div class="container" v-reveal.children>
         <span class="label">Contact</span>
         <h1 class="title">Parlons de <em>santé</em></h1>
         <p class="subtitle">
@@ -12,7 +12,7 @@
 
     <section class="contact-section">
       <div class="container">
-        <div class="contact-layout">
+        <div class="contact-layout" v-reveal.children>
           <div class="contact-info">
             <h2>Nous contacter</h2>
             <div class="info-item">
@@ -56,8 +56,12 @@
               <textarea id="message" v-model="form.message" rows="5" placeholder="Votre message..." required></textarea>
             </div>
             <button type="submit" class="submit-btn" :disabled="submitted">
-              {{ submitted ? 'Message envoyé ✓' : 'Envoyer le message' }}
+              {{ submitted ? 'Votre messagerie s\'ouvre… ✓' : 'Envoyer le message' }}
             </button>
+            <p v-if="submitted" class="submit-note" role="status">
+              Si rien ne s'ouvre, écrivez-nous directement à
+              <a href="mailto:contact@aliamnt.org">contact@aliamnt.org</a>.
+            </p>
           </form>
         </div>
       </div>
@@ -66,14 +70,39 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive } from 'vue'
+import { ref, reactive, onMounted } from 'vue'
+import { useRoute } from 'vue-router'
 
+const route = useRoute()
 const submitted = ref(false)
 const form = reactive({ nom: '', email: '', sujet: '', message: '' })
 
+const SUJETS_VALIDES = ['partenariat', 'don', 'benevole', 'media', 'autre']
+
+const labelsSujet: Record<string, string> = {
+  partenariat: 'Partenariat',
+  don: 'Don',
+  benevole: 'Bénévolat',
+  media: 'Média / Presse',
+  autre: 'Contact',
+}
+
+onMounted(() => {
+  // Préselection du sujet via l'URL (ex: /contact?sujet=benevole)
+  const sujet = String(route.query.sujet ?? '')
+  if (SUJETS_VALIDES.includes(sujet)) form.sujet = sujet
+})
+
 function handleSubmit() {
+  const sujetLabel = labelsSujet[form.sujet] ?? 'Contact'
+  const subject = encodeURIComponent(`[${sujetLabel}] Message de ${form.nom}`)
+  const body = encodeURIComponent(`${form.message}\n\n—\n${form.nom}\n${form.email}`)
+
+  // Pas de backend : on ouvre le client mail du visiteur, pré-rempli
+  window.location.href = `mailto:contact@aliamnt.org?subject=${subject}&body=${body}`
+
   submitted.value = true
-  setTimeout(() => { submitted.value = false }, 4000)
+  setTimeout(() => { submitted.value = false }, 6000)
 }
 </script>
 
@@ -109,7 +138,14 @@ function handleSubmit() {
   letter-spacing: -0.02em;
   line-height: 1.1;
 }
-.title em { color: var(--color-green); font-style: italic; }
+.title em {
+  font-style: normal;
+  background: var(--gradient-accent);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+}
 
 .subtitle {
   font-family: var(--font-dm);
@@ -224,6 +260,20 @@ function handleSubmit() {
   opacity: 0.7;
   cursor: not-allowed;
 }
+
+.submit-note {
+  font-family: var(--font-dm);
+  font-size: 0.82rem;
+  color: var(--color-gray);
+  margin: 0;
+  text-align: center;
+}
+
+.submit-note a {
+  color: var(--color-green);
+  text-decoration: none;
+}
+.submit-note a:hover { text-decoration: underline; }
 
 @media (max-width: 1024px) {
   .contact-layout { grid-template-columns: 1fr; gap: 3rem; }
