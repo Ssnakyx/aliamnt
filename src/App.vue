@@ -2,6 +2,7 @@
   <div id="app">
     <a href="#main-content" class="skip-link">Aller au contenu principal</a>
 
+    <div class="grain" aria-hidden="true"></div>
     <ScrollProgress />
     <NavBar />
 
@@ -15,6 +16,7 @@
 
     <Footer />
     <BackToTop />
+    <MaladieModal />
   </div>
 </template>
 
@@ -24,6 +26,10 @@ import NavBar from '@/components/layout/NavBar.vue'
 import Footer from '@/components/layout/Footer.vue'
 import ScrollProgress from '@/components/ui/ScrollProgress.vue'
 import BackToTop from '@/components/ui/BackToTop.vue'
+import MaladieModal from '@/components/ui/MaladieModal.vue'
+import { useScrollReveal } from '@/composables/useScrollReveal'
+
+useScrollReveal()
 </script>
 
 <style>
@@ -33,6 +39,8 @@ import BackToTop from '@/components/ui/BackToTop.vue'
 @import 'tailwindcss/base';
 @import 'tailwindcss/components';
 @import 'tailwindcss/utilities';
+/* Système de design ALIAMNT — importé en dernier pour primer sur les bases */
+@import '@/assets/styles/site.css';
 
 /* Page transitions — fondu + montée + dé-flou */
 .page-enter-active {
@@ -54,15 +62,9 @@ import BackToTop from '@/components/ui/BackToTop.vue'
 
 /* Scrollbar */
 ::-webkit-scrollbar { width: 4px; }
-::-webkit-scrollbar-track { background: var(--color-bg); }
-::-webkit-scrollbar-thumb { background: var(--color-green-dark, #0A5A22); border-radius: 2px; }
-::-webkit-scrollbar-thumb:hover { background: var(--color-green-dim); }
-
-/* Text selection */
-::selection {
-  background: rgba(65, 145, 255, 0.35);
-  color: var(--color-white);
-}
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--blue-dark); border-radius: 2px; }
+::-webkit-scrollbar-thumb:hover { background: var(--blue-dim); }
 
 /* Skip link (accessibilité clavier) */
 .skip-link {
@@ -70,9 +72,9 @@ import BackToTop from '@/components/ui/BackToTop.vue'
   top: -100px;
   left: 1rem;
   z-index: 300;
-  background: var(--color-green);
-  color: #07101E;
-  font-family: var(--font-dm);
+  background: var(--blue);
+  color: #050A13;
+  font-family: var(--font-body);
   font-weight: 600;
   font-size: 0.875rem;
   padding: 0.65rem 1.25rem;
@@ -92,7 +94,5 @@ import BackToTop from '@/components/ui/BackToTop.vue'
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
   }
-  .cursor-ring,
-  .cursor-dot { display: none !important; }
 }
 </style>

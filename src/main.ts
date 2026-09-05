@@ -5,6 +5,7 @@ import Lenis from 'lenis'
 import App from './App.vue'
 import router from './router'
 import { vReveal } from './directives/reveal'
+import { setLenis } from './composables/useLenis'
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -26,6 +27,9 @@ if (prefersReducedMotion) {
   lenis.on('scroll', ScrollTrigger.update)
   gsap.ticker.add(time => lenis.raf(time * 1000))
   gsap.ticker.lagSmoothing(0)
+
+  // Permet aux composants (ex. modal) de mettre le scroll en pause
+  setLenis(lenis)
 }
 
 const app = createApp(App)

@@ -4,9 +4,10 @@
     <StatsSection />
     <MissionSection />
     <MaladiesGrid />
-    <CampagnesSection />
-    <HabitudesSection />
+    <QuizSection />
     <QuoteSection />
+    <CampagnesSection />
+    <MediaSection />
     <JoinSection />
   </main>
 </template>
@@ -16,8 +17,9 @@ import HeroSection from '@/components/sections/HeroSection.vue'
 import StatsSection from '@/components/sections/StatsSection.vue'
 import MissionSection from '@/components/sections/MissionSection.vue'
 import MaladiesGrid from '@/components/sections/MaladiesGrid.vue'
-import CampagnesSection from '@/components/sections/CampagnesSection.vue'
-import HabitudesSection from '@/components/sections/HabitudesSection.vue'
+import QuizSection from '@/components/sections/QuizSection.vue'
 import QuoteSection from '@/components/sections/QuoteSection.vue'
+import CampagnesSection from '@/components/sections/CampagnesSection.vue'
+import MediaSection from '@/components/sections/MediaSection.vue'
 import JoinSection from '@/components/sections/JoinSection.vue'
 </script>

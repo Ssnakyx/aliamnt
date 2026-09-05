@@ -28,8 +28,8 @@
   --color-border-subtle: rgba(255, 255, 255, 0.07);
 
   /* Typography */
-  --font-playfair: 'Clash Display', 'Sora', system-ui, sans-serif;
-  --font-dm:       'Switzer', 'Inter', system-ui, sans-serif;
+  --font-playfair: 'Sora', system-ui, sans-serif;
+  --font-dm:       'Inter', system-ui, sans-serif;
   --font-mono:     'Space Mono', monospace;
 
   /* Spacing */
